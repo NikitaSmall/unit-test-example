@@ -58,7 +58,7 @@ func TestFailing(t *testing.T) {
 	playerService := PlayerService{playerRepository}
 
 	// should be "Deuce" to not  fail
-	expectedResult := "Thirty-All"
+	expectedResult := "Deuce"
 
 	actualResult, err := playerService.GetScores("Rafael", "Serena")
 	if err != nil {
