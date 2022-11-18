@@ -84,29 +84,30 @@ jobs:
 
   deploy:
     needs: build
-  - name: Deploy code
-    uses: easingthemes/ssh-deploy@main
-    env:
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-      REMOTE_USER: ${{ secrets.REMOTE_USER }}
-      TARGET: ~/example
-  - name: Build docker
-    uses: appleboy/ssh-action@master
-    with:
-      host: ${{ secrets.REMOTE_HOST }}
-      username: ${{ secrets.REMOTE_USER }}
-      key: ${{ secrets.SSH_PRIVATE_KEY }}
-      port: 22
-      script: | 
-        cd ~/example
-        docker build -t test:latest .
-  - name: Run docker
-    uses: appleboy/ssh-action@master
-    with:
-      host: ${{ secrets.REMOTE_HOST }}
-      username: ${{ secrets.REMOTE_USER }}
-      key: ${{ secrets.SSH_PRIVATE_KEY }}
-      port: 22
-      script: | 
-        docker stop unit-test ; docker run -p 8080:8080 -d --name unit-test test:latest
+    steps:
+    - name: Deploy code
+      uses: easingthemes/ssh-deploy@main
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        TARGET: ~/example
+    - name: Build docker
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: | 
+          cd ~/example
+          docker build -t test:latest .
+    - name: Run docker
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: | 
+          docker stop unit-test ; docker run -p 8080:8080 -d --name unit-test test:latest
